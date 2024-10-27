@@ -38,8 +38,9 @@ You can repeat these steps and create Groups and Access token either in the main
 
 In this section, you will create a federated repository and monitor the synchronisation between the source and destinations
 
+
 1. Find the docker repository <PROJECT_KEY>-docker-dev-local
-2. Convert this repository to **Federated**
+2. Convert this repository to **Federated** using the UI or via [API](#convert-local-repository-to-a-federated-repository)
 ![Convert To Federated](./assets/lab1_convert_to_federated.png)
 3. Edit the repository configuration and add repositories in the **Federation** tab
 ![Edit Federated](./assets/lab1_edit_federated.png)
@@ -47,6 +48,7 @@ In this section, you will create a federated repository and monitor the synchron
 ![Add Federated Repositories](./assets/lab1_create_new_federated.png)
 5. Check that on the second JPD your repository has been created with the right configuration (If you created it automatically)
 ![Check Federated](./assets/lab1_check_federated_created.png)
+
 
 You can now upload artifacts in both federated repositories and check that they are replicated seamlessly.
 
@@ -70,6 +72,17 @@ To upload an artifact without using the JFrog CLI or Docker client, you can copy
 Although artifacts are synchronized, you can also try to update the configuration of the repository and check whether or no it is replicated. 
 
 Based on the network performance and size of the artifact, synchronising it in a far location can be long. You can check if it is possible to download it during the synchronisation period.  
+
+## API commands
+
+### Convert local repository to a federated repository
+
+Run :
+
+        jf rt curl -XPOST "/api/federation/migrate/<PROJECT_KEY>-docker-dev-local" -H "Content-Type: application/json"
+
+
+[JFrog documentation](https://jfrog.com/help/r/jfrog-rest-apis/convert-local-repository-to-a-federated-repository)
 
 
 

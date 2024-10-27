@@ -17,11 +17,29 @@ All these resources are part of the same circle of trust and access are federate
 
 For this lab, you will use the following resources (already created):
 
-- <PROJECT_KEY>-maven-dev-local maven repository
-- <PROJECT_KEY>-maven-stg-local maven repository
-- <PROJECT_KEY>-maven-prod-local maven repository
-- <PROJECT_KEY>-maven-remote-prod maven repository
-- <PROJECT_KEY>-maven-build build-info
+Virtual repositories:
+- <PROJECT_KEY>-app-docker-virtual
+- <PROJECT_KEY>-app-gradle-virtual
+- <PROJECT_KEY>-app-helm-virtual
+
+Local repositories:
+- <PROJECT_KEY>-app-docker-dev-local
+- <PROJECT_KEY>-app-docker-rc-local
+- <PROJECT_KEY>-app-docker-prod-local
+- <PROJECT_KEY>-app-gradle-dev-local
+- <PROJECT_KEY>-app-gradle-rc-local
+- <PROJECT_KEY>-app-gradle-prod-local
+- <PROJECT_KEY>-app-helm-dev-local
+- <PROJECT_KEY>-app-helm-rc-local
+- <PROJECT_KEY>-app-helm-prod-local
+
+Remote repositories
+- <PROJECT_KEY>-app-docker-remote
+- <PROJECT_KEY>-app-gradle-remote
+- <PROJECT_KEY>-app-helm-remote
+
+One build-info repository with 3 builds (on per package type) and one release-bundle-v2 
+
 
 ![Lab resources](./assets/lab2_resources.png)
 
@@ -65,3 +83,7 @@ As you can see, there is no JFrog project on the Edge nodes. In additional, the 
 ### Going further
 
 Watch & Policy with "Block promotion" and "Block distribution" ?
+
+# Congratulations ! You have completed Lab
+
+## API commands

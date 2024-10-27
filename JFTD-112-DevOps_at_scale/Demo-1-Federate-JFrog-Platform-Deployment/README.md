@@ -1,6 +1,6 @@
-# LAB 0 - Federate JFrog Platform Deployment
+# Demo 1 - Federate JFrog Platform Deployment
 
-The aim of this lab is to federate platforms (JFrog Platform Deployment and Edge nodes) with the main JFrog platform and set up Access Federation. 
+The aim of this demo is to federate platforms (JFrog Platform Deployment and Edge nodes) with the main JFrog platform and set up Access Federation. 
 
 This lab is a pre-requisite to Lab1 and Lab2 where you will actually use:
 
@@ -60,5 +60,7 @@ To exchange the certificate, you need to copy a service's root certificate to an
 5. Once you applied start topology for both JDP, you can review the configuration on the UI
 ![Access Federation](./assets/lab0_access_federation.png)
 
-# Congratulations ! You have completed Lab 0
+
+
+# Congratulations ! You have completed Demo 1
 
