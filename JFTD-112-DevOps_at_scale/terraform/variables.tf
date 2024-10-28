@@ -27,3 +27,13 @@ variable "paring_token_edge_aus" {
   description = "Temporary paring token"
   type = string
 }
+
+variable "pairing_token_edge_hk" {
+  description = "Temporary paring token"
+  type = string
+}
+
+variable "pairing_token_secondary_jpd" {
+  description = "Temporary paring token"
+  type = string
+}

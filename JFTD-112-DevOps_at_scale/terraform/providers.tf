@@ -12,7 +12,7 @@ terraform {
       source  = "jfrog/xray"
       version = "2.13.0"
     }
-    mission-control = {
+    missioncontrol = {
       source = "jfrog/mission-control"
       version = "1.1.0"
     }
@@ -34,7 +34,7 @@ provider "xray" {
   access_token = var.access_token
 }
 
-provider "mission-control" {
+provider "missioncontrol" {
   url          = var.jfrog_url
   access_token = var.access_token
 }
