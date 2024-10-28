@@ -1,6 +1,6 @@
 # LAB 2 - Release Lifecycle Management and Distribution
 
-The aim of this lab is to ...
+The aim of this lab is to understand the value of using JFrog Release Lifecycle Management and Distribution in the context of distributed DevOps. 
 
 ## Lab Architecture
 
