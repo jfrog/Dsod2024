@@ -1,144 +1,150 @@
+#!/bin/bash
+
 ##########################################################
 #           DevSecOps Days Paris 2024 - JFTD-112
 ##########################################################
 
+# Fail the script on any command failure and ensure unset variables raise an error
+set -euo pipefail
+
+# Enable logging
+LOG_FILE="./script.log"
+exec 3>&1 1>>"${LOG_FILE}" 2>&1  # Log stdout and stderr to the log file and keep stdout on fd 3
+
+log() {
+  echo "$(date +'%Y-%m-%d %H:%M:%S') - $*" >&3
+}
+
+error_exit() {
+  log "ERROR: $1"
+  exit 1
+}
 
 ###############################################
-#Prepare your local environment
+# Prepare your local environment
 ###############################################
 
 # Load environment variables
-source .env
+log "Loading environment variables..."
+if [[ -f ".env" ]]; then
+  source .env || error_exit "Failed to source .env file"
+else
+  error_exit ".env file not found!"
+fi
+
+# Check required variables
+required_vars=("JFROG_PLATFORM" "token" "PROJECT_NAME" "PROJECT_DESCRIPTION" "PROJECT_ID" "SCRIPT_DIR")
+for var in "${required_vars[@]}"; do
+  [[ -z "${!var:-}" ]] && error_exit "Environment variable $var is not set or empty"
+done
 
 ################################################################################################################
 ## LAB 1 - Repository and project provisioning
 ################################################################################################################
 
-# Configure CLI in the main JPD
-jf config add dsod --url=https://$JFROG_PLATFORM --access-token=$token --interactive=false
+log "Configuring JFrog CLI..."
+jf config add dsod --url=https://"$JFROG_PLATFORM" --access-token="$token" --interactive=false || error_exit "Failed to configure dsod"
+jf config add dsod-edge --url=https://"$JFROG_EDGE" --access-token="$edge_token" --interactive=false || error_exit "Failed to configure dsod-edge"
 
-# Configure CLI in the Artifactory Edge
-jf config add dsod-edge --url=https://$JFROG_EDGE --access-token=$edge_token --interactive=false
+jf c use dsod || error_exit "Failed to set dsod as default"
 
-# Updating with a new token (example)
-jf config edit dsod-edge --access-token=$edge_token --interactive=false
+log "Creating JFrog project..."
+curl -s -X POST -H "Authorization: Bearer $token" -H 'Content-Type: application/json' \
+    -d "{\"PROJECT_DESCRIPTION\":\"$PROJECT_DESCRIPTION\", \"display_name\":\"$PROJECT_NAME\", \"project_key\":\"$PROJECT_ID\"}" \
+    https://"$JFROG_PLATFORM"/access/api/v1/projects || error_exit "Failed to create JFrog project"
 
-# Check existing configuration
-jf c show
+# Create repositories in JPD and Edge
+create_repository() {
+  local repo_type=$1
+  log "Creating $repo_type repositories..."
+  jf rt curl -X PUT /api/v2/repositories/batch --header 'Content-Type: application/json' \
+      -d @"$SCRIPT_DIR/env-provisioning/repositories/repository-$repo_type.json" || error_exit "Failed to create $repo_type repositories"
+}
 
-# Make it default
-jf c use dsod
+for repo_type in local remote virtual; do
+  create_repository "$repo_type"
+done
 
-# Create project
-curl -XPOST -H "Authorization: Bearer ${token}" -H 'Content-Type:application/json' https://$JFROG_PLATFORM/access/api/v1/projects -d "{\"PROJECT_DESCRIPTION\":\"${PROJECT_DESCRIPTION}\", \"display_name\":\"${PROJECT_NAME}\", \"project_key\":\"${PROJECT_ID}\"}"
+log "Creating Edge repositories..."
+jf rt curl -X PUT /api/v2/repositories/batch --header 'Content-Type: application/json' \
+    -d @"$SCRIPT_DIR/env-provisioning/repositories/repository-local-edge.json" --server-id dsod-edge || error_exit "Failed to create Edge local repositories"
 
-# Create all repositories in the main Artifactory JPD
-# TODO : Update the template to use the project ID
-#sed "s/app/${PROJECT_ID}-app/g" $SCRIPT_DIR/env-provisioning/repositories/repo-conf-creation-main-template.yaml > $SCRIPT_DIR/env-provisioning/repositories/repo-conf-creation-main.yaml
-
-# Local repositories
-jf rt curl -XPUT /api/v2/repositories/batch --header 'Content-Type: application/json' -d @${SCRIPT_DIR}/env-provisioning/repositories/repository-local.json
-# Remote repisoties
-jf rt curl -XPUT /api/v2/repositories/batch --header 'Content-Type: application/json' -d @${SCRIPT_DIR}/env-provisioning/repositories/repository-remote.json
-# Virtual repositories
-jf rt curl -XPUT /api/v2/repositories/batch --header 'Content-Type: application/json' -d @${SCRIPT_DIR}/env-provisioning/repositories/repository-virtual.json
-
-# Create all repositories in the Artifactory Edge Node
-# Local repositories EDGE1
-jf rt curl -XPUT /api/v2/repositories/batch --header 'Content-Type: application/json' -d @${SCRIPT_DIR}/env-provisioning/repositories/repository-local-edge.json --server-id dsod-edge
-# Virtual repositories EDGE2
-jf rt curl -XPUT /api/v2/repositories/batch --header 'Content-Type: application/json' -d @${SCRIPT_DIR}/env-provisioning/repositories/repository-virtual-edge.json --server-id dsod-edge
-
-# Adding builds to the Xray indexing process
-#curl -u$ADMIN_USER:$ADMIN_PASSWORD -X POST -H "content-type: application/json"  https://$JFROG_PLATFORM/xray/api/v1/binMgr/builds -T $SCRIPT_DIR/lab-3/indexed-builds.json
-# TODO : Define a pattern based on the build name (manually in the UI)
+jf rt curl -X PUT /api/v2/repositories/batch --header 'Content-Type: application/json' \
+    -d @"$SCRIPT_DIR/env-provisioning/repositories/repository-virtual-edge.json" --server-id dsod-edge || error_exit "Failed to create Edge virtual repositories"
 
 ################################################################################################################
-## LAB 2 - JFROG CLI Build integration
+## LAB 2 - JFrog CLI Build integration
 ################################################################################################################
 
-# CD into the java src code folder 
-cd $SCRIPT_DIR/back/webservice
+log "Configuring build integration for Gradle..."
+cd "$SCRIPT_DIR/back/webservice" || error_exit "Directory $SCRIPT_DIR/back/webservice not found"
 
-# Configure cli for gradle
-# Todo disable ivy descriptors
-jf gradlec --repo-resolve=${PROJECT_ID}-app-gradle-virtual --server-id-resolve=dsod --repo-deploy=${PROJECT_ID}-app-gradle-virtual --deploy-ivy-desc=false --deploy-maven-desc=true --server-id-deploy=dsod
+jf gradlec --repo-resolve="${PROJECT_ID}-app-gradle-virtual" \
+           --server-id-resolve=dsod \
+           --repo-deploy="${PROJECT_ID}-app-gradle-virtual" \
+           --deploy-ivy-desc=false \
+           --deploy-maven-desc=true \
+           --server-id-deploy=dsod || error_exit "Failed to configure Gradle CLI"
 
-# Local proxy for our build info extractor (for both Maven and Gradle)
 export JFROG_CLI_EXTRACTORS_REMOTE=dsod/extractors
 
-# Gradle Build Run
-jfrog gradle clean artifactoryPublish -b build.gradle --info --refresh-dependencies --build-name=${PROJECT_ID}-gradle-jftd-112 --build-number=$BUILD_NUMBER --project=${PROJECT_ID}
+log "Running Gradle build..."
+jfrog gradle clean artifactoryPublish -b build.gradle --info --refresh-dependencies \
+    --build-name="${PROJECT_ID}-gradle-jftd-112" --build-number="$BUILD_NUMBER" --project="$PROJECT_ID" || error_exit "Gradle build failed"
 
-# Publishing Build info
-jf rt bp ${PROJECT_ID}-gradle-jftd-112 $BUILD_NUMBER --project=${PROJECT_ID}
+log "Publishing Gradle build info..."
+jf rt bp "${PROJECT_ID}-gradle-jftd-112" "$BUILD_NUMBER" --project="$PROJECT_ID" || error_exit "Failed to publish Gradle build info"
 
-# Docker App Build
-# Updating dockerfile with JFrog Platform URL
-cd $SCRIPT_DIR/back/CI/Docker
+log "Preparing Docker build..."
+cd "$SCRIPT_DIR/back/CI/Docker" || error_exit "Directory $SCRIPT_DIR/back/CI/Docker not found"
+sed "s/registry/$JFROG_PLATFORM\/${PROJECT_ID}-app-docker-virtual/g" jfrog-Dockerfile > Dockerfile || error_exit "Failed to update Dockerfile"
 
-# Update the docker file to define the registry for the base image
-sed "s/registry/${JFROG_PLATFORM}\/${PROJECT_ID}-app-docker-virtual/g" jfrog-Dockerfile > Dockerfile
+BASE_IMAGE=$(awk '/^FROM/ {print $2}' Dockerfile)
+[[ -z "$BASE_IMAGE" ]] && error_exit "Base image not found in Dockerfile"
 
-# Reading the docker file and identifying the base image
-export BASE_IMAGE=$(cat Dockerfile | grep "^FROM" | awk '{print $2}' )
+log "Pulling base image..."
+jf rt dpl "$BASE_IMAGE" "${PROJECT_ID}-app-docker-virtual" --build-name="${PROJECT_ID}-docker-jftd-112" \
+    --build-number="$BUILD_NUMBER" --module=app || error_exit "Failed to deploy base image"
 
-# Pulling fhe base image
-jf rt dpl $BASE_IMAGE ${PROJECT_ID}-app-docker-virtual --build-name=${PROJECT_ID}-docker-jftd-112 --build-number=$BUILD_NUMBER --module=app
+log "Building Docker image..."
+docker build . -t "$JFROG_PLATFORM/${PROJECT_ID}-app-docker-virtual/${PROJECT_ID}-jfrog-docker-app:$BUILD_NUMBER" \
+    -f Dockerfile --build-arg REGISTRY="$JFROG_PLATFORM/${PROJECT_ID}-app-docker-virtual" --build-arg BASE_TAG="$BUILD_NUMBER" || error_exit "Docker build failed"
 
-# Download war file dependency
-#jf rt dl "${PROJECT_ID}-app-gradle-virtual/*/webservice*.war" war/ --props="stage=staging" --build=dosd-gradle/$BUILD_NUMBER --build-name=${PROJECT_ID}-docker-jftd-112 --build-number=$BUILD_NUMBER --module=java-app --flat=true
-jf rt dl "${PROJECT_ID}-app-gradle-virtual/*/webservice*.war" war/ --build=${PROJECT_ID}-gradle-jftd-112/$BUILD_NUMBER --build-name=${PROJECT_ID}-docker-jftd-112 --build-number=$BUILD_NUMBER --module=java-app --flat=true
-# Run docker build
-docker build . -t $JFROG_PLATFORM/${PROJECT_ID}-app-docker-virtual/${PROJECT_ID}-jfrog-docker-app:$BUILD_NUMBER  -f Dockerfile --build-arg REGISTRY=$JFROG_PLATFORM/${PROJECT_ID}-app-docker-virtual --build-arg BASE_TAG=$BUILD_NUMBER
+log "Pushing Docker image..."
+jf rt dp "$JFROG_PLATFORM/${PROJECT_ID}-app-docker-virtual/${PROJECT_ID}-jfrog-docker-app:$BUILD_NUMBER" \
+    "${PROJECT_ID}-app-docker-virtual" --build-name="${PROJECT_ID}-docker-jftd-112" --build-number="$BUILD_NUMBER" \
+    --module=app --project="$PROJECT_ID" || error_exit "Failed to push Docker image"
 
-# Push the image
-# Present a slideck during the docker push (this can take several minutes)
-jf rt dp $JFROG_PLATFORM/${PROJECT_ID}-app-docker-virtual/${PROJECT_ID}-jfrog-docker-app:$BUILD_NUMBER ${PROJECT_ID}-app-docker-virtual --build-name=${PROJECT_ID}-docker-jftd-112 --build-number=$BUILD_NUMBER --module=app --project=${PROJECT_ID}
+log "Publishing Docker build info..."
+jf rt bp "${PROJECT_ID}-docker-jftd-112" "$BUILD_NUMBER" --project="$PROJECT_ID" || error_exit "Failed to publish Docker build info"
 
-# Publish the docker build
-jf rt bp ${PROJECT_ID}-docker-jftd-112 $BUILD_NUMBER --project=${PROJECT_ID}
+# Log creation and upload of Helm Chart
+log "Creating and uploading Helm chart..."
+cp -r "$SCRIPT_DIR/docker-app-chart-template" "$SCRIPT_DIR/docker-app-chart" || error_exit "Failed to copy Helm chart template"
+cd "$SCRIPT_DIR/docker-app-chart" || error_exit "Directory $SCRIPT_DIR/docker-app-chart not found"
 
-#Searching for the base image of my docker build
-## what base image has been used
-jf rt s --spec="${SCRIPT_DIR}/lab-2/filespec-aql-dependency-search.json" --spec-vars="build-name=${PROJECT_ID}-docker-jftd-112;build-number=$BUILD_NUMBER"
+sed -i "s/0.1.1/0.1.$BUILD_NUMBER/" Chart.yaml || error_exit "Failed to update Chart.yaml"
+sed -i "s/latest/$BUILD_NUMBER/g" values.yaml || error_exit "Failed to update values.yaml"
 
-#Promote the docker build to release candidate
-#jf rt bpr ${PROJECT_ID}-docker-jftd-112 $BUILD_NUMBER ${PROJECT_ID}-app-docker-rc-local --status="release candidate" --copy=true --props="maintainer=hza;stage=staging;appnmv=$APP_ID/$APP_VERSION"
+jf rt bce "${PROJECT_ID}-helm-jftd-112" "$BUILD_NUMBER" --project="$PROJECT_ID" || error_exit "Failed to create Helm build info"
+helm package . || error_exit "Failed to package Helm chart"
+jf rt u 'docker-app-chart-*.tgz' "${PROJECT_ID}-app-helm-virtual" --build-name="${PROJECT_ID}-helm-jftd-112" --build-number="$BUILD_NUMBER" \
+    --module=app --project="$PROJECT_ID" || error_exit "Failed to upload Helm chart"
+jf rt bp "${PROJECT_ID}-helm-jftd-112" "$BUILD_NUMBER" --project="$PROJECT_ID" || error_exit "Failed to publish Helm build info"
 
-# cd into helm chart repo
-cp -r $SCRIPT_DIR/docker-app-chart-template $SCRIPT_DIR/docker-app-chart
-cd $SCRIPT_DIR/docker-app-chart
+# Log release bundle operations
+log "Creating and promoting release bundles..."
+jf rbc --spec="$SCRIPT_DIR/lab-4/build-spec.json" "${PROJECT_ID}-rb-jftd-111" "$APP_VERSION" \
+    --spec-vars="project-id=$PROJECT_ID" --signing-key="LoanDeptKey" --project="$PROJECT_ID" || error_exit "Failed to create release bundle"
 
-sed -ie 's/0.1.1/0.1.'"$BUILD_NUMBER"'/' ./Chart.yaml
-sed -ie 's/latest/'"$BUILD_NUMBER"'/g' ./values.yaml
+for env in DEV RC PROD; do
+  log "Promoting to $env..."
+  jf rbp "${PROJECT_ID}-rb-jftd-111" "$APP_VERSION" "$env" --signing-key="LoanDeptKey" --project="$PROJECT_ID" --sync=true || error_exit "Failed to promote to $env"
+done
 
-jf rt bce ${PROJECT_ID}-helm-jftd-112 $BUILD_NUMBER --project=${PROJECT_ID}
+log "Distributing release bundle..."
+curl -s -X POST -H "Authorization: Bearer $token" -H 'Content-Type: application/json' \
+    -d @"$SCRIPT_DIR/env-provisioning/jfrog-distribution/distribution-spec.json" \
+    https://"$JFROG_PLATFORM"/lifecycle/api/v2/distribution/distribute/"${PROJECT_ID}-rb-jftd-111/$APP_VERSION"?project=dsodparis || error_exit "Release bundle distribution failed"
 
-# Reference the docker image as helm build dependency
-# Important: to do > fetch from virtual, filter based on application name and version
-jf rt dl ${PROJECT_ID}-app-docker-virtual/${PROJECT_ID}-jfrog-docker-app/$BUILD_NUMBER/manifest.json --build-name=${PROJECT_ID}-helm-jftd-112 --build-number=$BUILD_NUMBER --module=app --project=${PROJECT_ID}
-
-# package the helm chart 
-helm package .
-
-# upload the helm chart
-jf rt u 'docker-app-chart-*.tgz' ${PROJECT_ID}-app-helm-virtual --build-name=${PROJECT_ID}-helm-jftd-112 --build-number=$BUILD_NUMBER --module=app --project=${PROJECT_ID}
-
-# publish the helm build
-jf rt bp ${PROJECT_ID}-helm-jftd-112 $BUILD_NUMBER --project=${PROJECT_ID}
-
-# Release bundle creation
-jf rbc --spec=$SCRIPT_DIR/lab-4/build-spec.json ${PROJECT_ID}-rb-jftd-111 $APP_VERSION  --spec-vars="project-id=$PROJECT_ID" --signing-key="LoanDeptKey" --project=${PROJECT_ID}
-
-# Release bundle promotion to DEV
-jf rbp ${PROJECT_ID}-rb-jftd-111 $APP_VERSION DEV --signing-key="LoanDeptKey" --project=${PROJECT_ID} --sync=true
-
-# Release bundle promotion to RC
-jf rbp ${PROJECT_ID}-rb-jftd-111 $APP_VERSION RC --signing-key="LoanDeptKey" --project=${PROJECT_ID} --sync=true
-
-# Release bundle promotion to PROD
-jf rbp ${PROJECT_ID}-rb-jftd-111 $APP_VERSION PROD --signing-key="LoanDeptKey" --project=${PROJECT_ID} --sync=true
-
-# Release bundle Distribution
-curl -XPOST -H "Authorization: Bearer ${token}" -H 'Content-Type:application/json' https://$JFROG_PLATFORM/lifecycle/api/v2/distribution/distribute/${PROJECT_ID}-rb-jftd-111/$APP_VERSION?project=dsodparis" -d @${SCRIPT_DIR}/env-provisioning/jfrog-distribution/distribution-spec.json
+log "Script completed successfully."
