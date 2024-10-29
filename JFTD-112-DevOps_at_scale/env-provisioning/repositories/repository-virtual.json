@@ -1,0 +1,62 @@
+[
+  {
+    "key": "training-app-gradle-virtual",
+    "projectKey": "training",
+    "environments": ["PROD"],
+    "rclass": "virtual",
+    "packageType": "gradle",
+    "repositories": [
+      "training-app-gradle-dev-local",
+      "training-app-gradle-rc-local",
+      "training-app-gradle-prod-local",
+      "training-app-gradle-remote"
+    ],
+    "description": "gradle virtual repositories",
+    "notes": "",
+    "includesPattern": "**/*",
+    "excludesPattern": "",
+    "repoLayoutRef": "maven-2-default",
+    "artifactoryRequestsCanRetrieveRemoteArtifacts": false,
+    "defaultDeploymentRepo": "training-app-gradle-dev-local"
+  },
+  {
+    "key": "training-app-docker-virtual",
+    "projectKey": "training",
+    "environments": ["PROD"],
+    "rclass": "virtual",
+    "packageType": "docker",
+    "repositories": [
+      "training-app-docker-dev-local",
+      "training-app-docker-rc-local",
+      "training-app-docker-prod-local",
+      "training-app-docker-remote"
+    ],
+    "description": "docker virtual",
+    "notes": "",
+    "includesPattern": "**/*",
+    "excludesPattern": "",
+    "repoLayoutRef": "simple-default",
+    "artifactoryRequestsCanRetrieveRemoteArtifacts": false,
+    "defaultDeploymentRepo": "training-app-docker-dev-local"
+  },
+  {
+    "key": "training-app-helm-virtual",
+    "projectKey": "training",
+    "environments": ["PROD"],
+    "rclass": "virtual",
+    "packageType": "helm",
+    "repositories": [
+      "training-app-helm-dev-local",
+      "training-app-helm-prod-local",
+      "training-app-helm-rc-local",
+      "training-app-helm-remote"
+    ],
+    "description": "helm virtual",
+    "notes": "",
+    "includesPattern": "**/*",
+    "excludesPattern": "",
+    "repoLayoutRef": "simple-default",
+    "artifactoryRequestsCanRetrieveRemoteArtifacts": false,
+    "defaultDeploymentRepo": "training-app-helm-dev-local"
+  }
+]

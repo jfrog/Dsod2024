@@ -1,0 +1,20 @@
+[
+  {
+    "key": "training-app-docker-prod-local",
+    "packageType": "docker",
+    "description": "production deployment",
+    "rclass": "local",
+    "repoLayoutRef": "simple-default",
+    "xrayIndex": true,
+    "environments": ["PROD"]
+  },
+  {
+    "key": "training-app-helm-prod-local",
+    "packageType": "helm",
+    "description": "helm local prod",
+    "rclass": "local",
+    "repoLayoutRef": "simple-default",
+    "xrayIndex": true,
+    "environments": ["PROD"]
+  }
+]

@@ -1,0 +1,43 @@
+[
+  {
+    "key": "training-app-docker-remote",
+    "environments": ["DEV"],
+    "packageType": "docker",
+    "description": "Docker remote repository",
+    "url": "https://registry-1.docker.io",
+    "projectKey": "training",
+    "rclass": "remote",
+    "xrayIndex": true,
+    "enableTokenAuthentication": true
+  },
+  {
+    "key": "training-app-gradle-remote",
+    "environments": ["DEV"],
+    "packageType": "gradle",
+    "description": "Gradle remote repository",
+    "url": "https://repo1.maven.org/maven2/",
+    "projectKey": "training",
+    "rclass": "remote",
+    "xrayIndex": true
+  },
+  {
+    "key": "training-app-helm-remote",
+    "environments": ["DEV"],
+    "packageType": "helm",
+    "description": "Helm remote repository",
+    "url": "https://storage.googleapis.com/kubernetes-charts",
+    "projectKey": "training",
+    "rclass": "remote",
+    "xrayIndex": true
+  },
+  {
+    "key": "training-extractors",
+    "environments": ["DEV"],
+    "packageType": "generic",
+    "description": "Generic remote repository for extractors",
+    "url": "https://oss.jfrog.org/artifactory/oss-release-local",
+    "projectKey": "training",
+    "rclass": "remote",
+    "xrayIndex": true
+  }
+]

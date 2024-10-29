@@ -1,0 +1,83 @@
+[
+  {
+    "key": "training-app-gradle-prod-local",
+    "environments": ["PROD"],
+    "packageType": "gradle",
+    "description": "production deployment",
+    "projectKey": "training",
+    "rclass": "local",
+    "xrayIndex": true
+  },
+  {
+    "key": "training-app-gradle-rc-local",
+    "environments": ["RC"],
+    "packageType": "gradle",
+    "description": "staging build",
+    "projectKey": "training",
+    "rclass": "local",
+    "xrayIndex": true
+  },
+  {
+    "key": "training-app-gradle-dev-local",
+    "environments": ["DEV"],
+    "packageType": "gradle",
+    "description": "dev build",
+    "projectKey": "training",
+    "rclass": "local",
+    "xrayIndex": true
+  },
+  {
+    "key": "training-app-docker-dev-local",
+    "environments": ["DEV"],
+    "packageType": "docker",
+    "description": "docker development repo",
+    "projectKey": "training",
+    "rclass": "local",
+    "xrayIndex": true
+  },
+  {
+    "key": "training-app-docker-rc-local",
+    "environments": ["RC"],
+    "packageType": "docker",
+    "description": "staging deployment",
+    "projectKey": "training",
+    "rclass": "local",
+    "xrayIndex": true
+  },
+  {
+    "key": "training-app-docker-prod-local",
+    "environments": ["PROD"],
+    "packageType": "docker",
+    "description": "production deployment",
+    "projectKey": "training",
+    "rclass": "local",
+    "xrayIndex": true
+  },
+  {
+    "key": "training-app-helm-dev-local",
+    "environments": ["DEV"],
+    "packageType": "helm",
+    "description": "helm local dev",
+    "projectKey": "training",
+    "rclass": "local",
+    "xrayIndex": true
+  },
+  {
+    "key": "training-app-helm-rc-local",
+    "environments": ["RC"],
+    "packageType": "helm",
+    "description": "helm local staging",
+    "projectKey": "training",
+    "rclass": "local",
+    "xrayIndex": true
+  },
+  {
+    "key": "training-app-helm-prod-local",
+    "environments": ["PROD"],
+    "packageType": "helm",
+    "description": "helm local prod",
+    "projectKey": "training",
+    "rclass": "local",
+    "xrayIndex": true
+  }
+]

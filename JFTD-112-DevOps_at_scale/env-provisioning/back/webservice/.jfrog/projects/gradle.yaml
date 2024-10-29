@@ -1,0 +1,11 @@
+version: 1
+type: gradle
+resolver:
+    repo: training-app-gradle-virtual
+    serverId: dsod
+deployer:
+    repo: training-app-gradle-virtual
+    serverId: dsod
+    deployMavenDescriptors: true
+    ivyPattern: '[organization]/[module]/ivy-[revision].xml'
+    artifactPattern: '[organization]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]'
