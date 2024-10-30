@@ -8,6 +8,16 @@ variable "access_token" {
   type = string
 }
 
+variable "hk_access_token" {
+  description = "JFrog access token for the HK edge"
+  type = string
+}
+
+variable "aus_access_token" {
+  description = "JFrog access token for the AUS edge"
+  type = string
+}
+
 variable "projects" {
   description = "List of JFrog project to create for students"
   type = list(

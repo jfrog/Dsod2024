@@ -9,6 +9,7 @@ You need to install terraform. To check the terraform installation, run :
 
     terraform --version
 
+To deploy resources on JPDs, you need an access token with administrator access for each of them. 
 
 ## terraform.tfvars
 
@@ -18,6 +19,8 @@ Before running the stack please create it as follows (feel free to tune it):
 
     jfrog_url = "https://dsodmultisite.jfrog.io"
     access_token = "<ADMIN_TOKEN>"
+    hk_access_token = "<ADMIN_TOKEN>"
+    aus_access_token = "<ADMIN_TOKEN>
 
     projects = [
         {
@@ -82,6 +85,8 @@ The terraform documentation has been generated with [terraform-docs](https://git
 | Name | Version |
 |------|---------|
 | <a name="provider_artifactory"></a> [artifactory](#provider\_artifactory) | 12.3.1 |
+| <a name="provider_artifactory.aus"></a> [artifactory.aus](#provider\_artifactory.aus) | 12.3.1 |
+| <a name="provider_artifactory.hk"></a> [artifactory.hk](#provider\_artifactory.hk) | 12.3.1 |
 | <a name="provider_missioncontrol"></a> [missioncontrol](#provider\_missioncontrol) | 1.1.0 |
 | <a name="provider_platform"></a> [platform](#provider\_platform) | 1.15.1 |
 
@@ -95,6 +100,10 @@ The terraform documentation has been generated with [terraform-docs](https://git
 
 | Name | Type |
 |------|------|
+| [artifactory_local_docker_v2_repository.docker_prod_local_aus](https://registry.terraform.io/providers/jfrog/artifactory/12.3.1/docs/resources/local_docker_v2_repository) | resource |
+| [artifactory_local_docker_v2_repository.docker_prod_local_hk](https://registry.terraform.io/providers/jfrog/artifactory/12.3.1/docs/resources/local_docker_v2_repository) | resource |
+| [artifactory_local_helm_repository.helm-prod-local_aus](https://registry.terraform.io/providers/jfrog/artifactory/12.3.1/docs/resources/local_helm_repository) | resource |
+| [artifactory_local_helm_repository.helm-prod-local_hk](https://registry.terraform.io/providers/jfrog/artifactory/12.3.1/docs/resources/local_helm_repository) | resource |
 | [artifactory_user.users](https://registry.terraform.io/providers/jfrog/artifactory/12.3.1/docs/resources/user) | resource |
 | [missioncontrol_access_federation_mesh.mesh-topology](https://registry.terraform.io/providers/jfrog/mission-control/1.1.0/docs/resources/access_federation_mesh) | resource |
 | [missioncontrol_jpd.dsodedgeaus](https://registry.terraform.io/providers/jfrog/mission-control/1.1.0/docs/resources/jpd) | resource |
@@ -108,6 +117,10 @@ The terraform documentation has been generated with [terraform-docs](https://git
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_access_token"></a> [access\_token](#input\_access\_token) | JFrog access token to deploy infrastructure | `string` | n/a | yes |
+| <a name="input_aus_access_token"></a> [aus\_access\_token](#input\_aus\_access\_token) | JFrog access token for the AUS edge | `string` | n/a | yes |
+| <a name="input_aus_edge_url"></a> [aus\_edge\_url](#input\_aus\_edge\_url) | URL of the AUS Artifactory edge node | `string` | n/a | yes |
+| <a name="input_hk_access_token"></a> [hk\_access\_token](#input\_hk\_access\_token) | JFrog access token for the HK edge | `string` | n/a | yes |
+| <a name="input_hk_edge_url"></a> [hk\_edge\_url](#input\_hk\_edge\_url) | URL of the HK Artifactory edge node | `string` | n/a | yes |
 | <a name="input_jfrog_url"></a> [jfrog\_url](#input\_jfrog\_url) | URL of the JFrog platform | `string` | n/a | yes |
 | <a name="input_oidc_repository_name"></a> [oidc\_repository\_name](#input\_oidc\_repository\_name) | Name of the github repository for the OIDC integration | `string` | n/a | yes |
 | <a name="input_oidc_token_username"></a> [oidc\_token\_username](#input\_oidc\_token\_username) | Username of the token spec for the OIDC integration | `string` | n/a | yes |
@@ -115,6 +128,7 @@ The terraform documentation has been generated with [terraform-docs](https://git
 | <a name="input_pairing_token_secondary_jpd"></a> [pairing\_token\_secondary\_jpd](#input\_pairing\_token\_secondary\_jpd) | Temporary paring token | `string` | n/a | yes |
 | <a name="input_paring_token_edge_aus"></a> [paring\_token\_edge\_aus](#input\_paring\_token\_edge\_aus) | Temporary paring token | `string` | n/a | yes |
 | <a name="input_projects"></a> [projects](#input\_projects) | List of JFrog project to create for students | <pre>list(<br/>    object({<br/>      project_key = string<br/>      display_name = string<br/>    })<br/>  )</pre> | n/a | yes |
+| <a name="input_secondary_jpd_url"></a> [secondary\_jpd\_url](#input\_secondary\_jpd\_url) | URL of the second JPD | `string` | n/a | yes |
 | <a name="input_temporary_password"></a> [temporary\_password](#input\_temporary\_password) | Temporary password for users | `string` | n/a | yes |
 
 ## Outputs

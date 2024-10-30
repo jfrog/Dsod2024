@@ -28,6 +28,18 @@ provider "artifactory" {
   access_token = var.access_token
 }
 
+provider "artifactory" {
+  alias = "aus"
+  url = "${var.aus_edge_url}/artifactory"
+  access_token = var.aus_access_token
+}
+
+provider "artifactory" {
+  alias = "hk"
+  url = "${var.hk_edge_url}/artifactory"
+  access_token = var.hk_access_token
+}
+
 provider "project" {
   url = "${var.jfrog_url}/artifactory"
   access_token = var.access_token
