@@ -28,12 +28,37 @@ variable "paring_token_edge_aus" {
   type = string
 }
 
+variable "aus_edge_url" {
+  description = "URL of the AUS Artifactory edge node"
+  type = string
+}
+
 variable "pairing_token_edge_hk" {
   description = "Temporary paring token"
   type = string
 }
 
+variable "hk_edge_url" {
+  description = "URL of the HK Artifactory edge node"
+  type = string
+}
+
 variable "pairing_token_secondary_jpd" {
   description = "Temporary paring token"
+  type = string
+}
+
+variable "secondary_jpd_url" {
+  description = "URL of the second JPD"
+  type = string
+}
+
+variable "oidc_repository_name" {
+  description = "Name of the github repository for the OIDC integration"
+  type = string
+}
+
+variable "oidc_token_username" {
+  description = "Username of the token spec for the OIDC integration"
   type = string
 }

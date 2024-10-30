@@ -7,7 +7,7 @@ This Terraform stack deploy JFrog Project with all local, remote and virtual rep
 You need to install terraform. To check the terraform installation, run :
 
 
-        terraform --version
+    terraform --version
 
 
 ## terraform.tfvars
@@ -16,44 +16,54 @@ The *terraform.tfvars* file has been ignored by git because it contains secrets 
 
 Before running the stack please create it as follows (feel free to tune it):
 
-        jfrog_url = "https://dsodmultisite.jfrog.io"
-        access_token = "<ADMIN_TOKEN>"
+    jfrog_url = "https://dsodmultisite.jfrog.io"
+    access_token = "<ADMIN_TOKEN>"
 
-        projects = [
-            {
-                project_key = "stdy"
-                display_name = "Student Y"
-            },
-            {
-                project_key = "stdz"
-                display_name = "Student Z"
-            }
-        ]
-        
-        temporary_password = "JFrogDSODEvent2024!"
-        paring_token_edge_aus = ""
+    projects = [
+        {
+            project_key = "stdy"
+            display_name = "Student Y"
+        },
+        {
+            project_key = "stdz"
+            display_name = "Student Z"
+        }
+    ]
+    
+    temporary_password = "JFrogDSODEvent2024!"
+    paring_token_edge_aus = ""
 
-        pairing_token_edge_hk = ""
+    pairing_token_edge_hk = ""
+    pairing_token_secondary_jpd = ""
+    paring_token_edge_aus = ""
+    pairing_token_secondary_jpd = ""
 
-        pairing_token_secondary_jpd = ""
+    oidc_repository_name = ""
+    oidc_token_username = ""
 
 ## Working with Terraform
 
 The backend of this stack is on another JPD. Before deploying, please authenticate on these platform with: 
 
-        terraform login <PLATFORM_URL>
+    terraform login <PLATFORM_URL>
 
 To deploy the stack :
 
-        terraform init
-        terraform apply
+    terraform init
+terraform apply
 
 To remove the stack :
 
-        terraform destroy
+    terraform destroy
 
 Some resources like *missioncontrol_access_federation_mesh* cannot be destroyed using API as documented [here](https://registry.terraform.io/providers/jfrog/mission-control/latest/docs/resources/access_federation_mesh). Therefore, you need to use the UI
 
+## Generate documentation
+
+The terraform documentation has been generated with [terraform-docs](https://github.com/terraform-docs/terrafo)
+
+    # In the terraform directory
+    terraform-docs markdown table --output-file README.md --output-mode inject .
 
 
 <!-- BEGIN_TF_DOCS -->
@@ -63,6 +73,7 @@ Some resources like *missioncontrol_access_federation_mesh* cannot be destroyed 
 |------|---------|
 | <a name="requirement_artifactory"></a> [artifactory](#requirement\_artifactory) | 12.3.1 |
 | <a name="requirement_missioncontrol"></a> [missioncontrol](#requirement\_missioncontrol) | 1.1.0 |
+| <a name="requirement_platform"></a> [platform](#requirement\_platform) | 1.15.1 |
 | <a name="requirement_project"></a> [project](#requirement\_project) | 1.9.0 |
 | <a name="requirement_xray"></a> [xray](#requirement\_xray) | 2.13.0 |
 
@@ -72,6 +83,7 @@ Some resources like *missioncontrol_access_federation_mesh* cannot be destroyed 
 |------|---------|
 | <a name="provider_artifactory"></a> [artifactory](#provider\_artifactory) | 12.3.1 |
 | <a name="provider_missioncontrol"></a> [missioncontrol](#provider\_missioncontrol) | 1.1.0 |
+| <a name="provider_platform"></a> [platform](#provider\_platform) | 1.15.1 |
 
 ## Modules
 
@@ -88,6 +100,8 @@ Some resources like *missioncontrol_access_federation_mesh* cannot be destroyed 
 | [missioncontrol_jpd.dsodedgeaus](https://registry.terraform.io/providers/jfrog/mission-control/1.1.0/docs/resources/jpd) | resource |
 | [missioncontrol_jpd.dsodedgehk](https://registry.terraform.io/providers/jfrog/mission-control/1.1.0/docs/resources/jpd) | resource |
 | [missioncontrol_jpd.dsodmultisite2](https://registry.terraform.io/providers/jfrog/mission-control/1.1.0/docs/resources/jpd) | resource |
+| [platform_oidc_configuration.configuration](https://registry.terraform.io/providers/jfrog/platform/1.15.1/docs/resources/oidc_configuration) | resource |
+| [platform_oidc_identity_mapping.github_integration](https://registry.terraform.io/providers/jfrog/platform/1.15.1/docs/resources/oidc_identity_mapping) | resource |
 
 ## Inputs
 
@@ -95,6 +109,8 @@ Some resources like *missioncontrol_access_federation_mesh* cannot be destroyed 
 |------|-------------|------|---------|:--------:|
 | <a name="input_access_token"></a> [access\_token](#input\_access\_token) | JFrog access token to deploy infrastructure | `string` | n/a | yes |
 | <a name="input_jfrog_url"></a> [jfrog\_url](#input\_jfrog\_url) | URL of the JFrog platform | `string` | n/a | yes |
+| <a name="input_oidc_repository_name"></a> [oidc\_repository\_name](#input\_oidc\_repository\_name) | Name of the github repository for the OIDC integration | `string` | n/a | yes |
+| <a name="input_oidc_token_username"></a> [oidc\_token\_username](#input\_oidc\_token\_username) | Username of the token spec for the OIDC integration | `string` | n/a | yes |
 | <a name="input_pairing_token_edge_hk"></a> [pairing\_token\_edge\_hk](#input\_pairing\_token\_edge\_hk) | Temporary paring token | `string` | n/a | yes |
 | <a name="input_pairing_token_secondary_jpd"></a> [pairing\_token\_secondary\_jpd](#input\_pairing\_token\_secondary\_jpd) | Temporary paring token | `string` | n/a | yes |
 | <a name="input_paring_token_edge_aus"></a> [paring\_token\_edge\_aus](#input\_paring\_token\_edge\_aus) | Temporary paring token | `string` | n/a | yes |

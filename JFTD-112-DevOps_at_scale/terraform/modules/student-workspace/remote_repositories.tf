@@ -3,6 +3,10 @@ resource "artifactory_remote_docker_repository" "docker-remote" {
   project_key = var.project_key
   url = "https://registry-1.docker.io"
   project_environments = ["DEV"]
+
+  block_pushing_schema1 = true
+  enable_token_authentication = true
+
   lifecycle {
     ignore_changes = [
       project_key

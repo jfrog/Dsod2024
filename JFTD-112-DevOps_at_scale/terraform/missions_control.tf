@@ -1,6 +1,6 @@
 resource "missioncontrol_jpd" "dsodedgeaus" {
   name     = "dsodedgeaus"
-  url      = "https://dsodedgeaus.jfrog.io/"
+  url      = var.aus_edge_url
   token    = var.paring_token_edge_aus
 
   location = {
@@ -15,7 +15,7 @@ resource "missioncontrol_jpd" "dsodedgeaus" {
 
 resource "missioncontrol_jpd" "dsodedgehk" {
   name     = "dsodedgehk"
-  url      = "https://dsodedgehk.jfrog.io/"
+  url      = var.hk_edge_url
   token    = var.pairing_token_edge_hk
 
   location = {
@@ -30,7 +30,7 @@ resource "missioncontrol_jpd" "dsodedgehk" {
 
 resource "missioncontrol_jpd" "dsodmultisite2" {
   name     = "dsodmultisite2"
-  url      = "https://dsodmultisite2.jfrog.io/"
+  url      = var.secondary_jpd_url
   token    = var.pairing_token_secondary_jpd
 
   location = {
@@ -51,4 +51,11 @@ resource "missioncontrol_access_federation_mesh" "mesh-topology" {
     missioncontrol_jpd.dsodedgehk.id
   ]
   entities = ["USERS", "GROUPS", "PERMISSIONS", "TOKENS"]
+
+  lifecycle {
+    ignore_changes = [
+      ids,
+      entities
+    ]
+  }
 }

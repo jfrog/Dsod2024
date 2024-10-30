@@ -36,7 +36,9 @@ resource "xray_watch" "watch" {
   project_key = var.project_key
 
   watch_resource {
+    bin_mgr_id = "default"
     type = "all-releaseBundlesV2"
+    name = "All Release Bundles V2"
   }
 
   assigned_policy {
