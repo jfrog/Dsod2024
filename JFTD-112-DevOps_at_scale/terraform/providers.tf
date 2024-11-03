@@ -45,6 +45,12 @@ provider "project" {
   access_token = var.access_token
 }
 
+provider "project" {
+  alias = "secondary"
+  url = "${var.secondary_jpd_url}/artifactory"
+  access_token = var.secondary_access_token
+}
+
 provider "xray" {
   url          = "${var.jfrog_url}/xray"
   access_token = var.access_token

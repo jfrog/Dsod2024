@@ -48,7 +48,7 @@ One build-info repository with 3 builds (on per package type) and one release-bu
 In this section, we are going to create a release bundle from à build-info. 
 
 1. From the **Application** module, select **Artifactory** then **Release Lifecycle**
-2. Create a new Release Bundle from **builds**
+2. Create a new Release Bundle from **builds** via UI or using [JFrog CLI](#create-release-bundle)
 ![Creation from build](./assets/create_rbv2_from_build.png)
 3. Enter a release bundle name with a version. To sign your bundle, use the *LoanDeptKey* GPG key.
 ![New RB](./assets/lab2_new_rb.png)
@@ -64,7 +64,7 @@ In this section, we are going to create a release bundle from à build-info.
 5. Your release bundle has been created. If you click on the release bundle version then *create* event, you can see the content of this release
 ![RBV2 Content](./assets/lab2_rbv2_content.png)
 
-6. Close this window and come back to the release bundle version. You can now drag and drop the release bundle version from **NEW** environment to **DEV** environment.
+6. Close this window and come back to the release bundle version. You can now drag and drop the release bundle version from **NEW** environment to **DEV** environment or using [JFrog CLI](#promote-release-bundle)
 ![RBV2 Promotion Content](./assets/lab2_promotion_content.png)
 7. You are about to promote your release bundle in the dev environment. Click on next then you will see the target repository for the promotion. Finaly promote your release bundle
 ![RBV2 Promote Dev](./assets/lab2_promote_to_dev.png)
@@ -86,6 +86,7 @@ In this section, we are going to create a release bundle from à build-info.
 14. [Optional] You can review all evidences related to a release bundle 
 15. Check on the edge node you selected that your artifact has been distributed. 
 ![Check Distrib](./assets/lab2_check_distrib.png)
+16. [Optional] You can try to delete your distributed release bundle in your edge using **remote delete** using UI or [JFrog CLI](#remote-delete)
 
 
 ### Going further
@@ -122,4 +123,26 @@ In this section, we will check how Xray can secure your release bundle from bein
 ![Xray Distributed](./assets/lab2_xray_distributed.png)
 # Congratulations ! You have completed Lab
 
-## API commands
+## JFrog CLI
+
+### Create release bundle
+
+    # Update create_spec file with your project key (ex: Student A -> stda)
+    jf rbc --spec=./create_spec.json --signing-key=LoanDeptKey --sync=true --project=<PROJECT_KEY> <PROJECT_KEY>-rb-training 1.0
+
+### Promote release bundle
+
+    jf rbp --signing-key=LoanDeptKey --project=<PROJECT_KEY> <PROJECT_KEY>-rb-training 1.0 [DEV|RC|PROD]
+
+### Distribute release bundle 
+
+    To be checked : it is possible to add multiple mapping pattern with the JFrog CLI ?
+
+    # Update dist-rules json file with the name of the destination (dsodedgehk, dsodedgeaus)
+    jf rbd --dist-rule=dist-rules.json --project=<PROJECT_KEY> --mapping-pattern="training-app-docker-dev-local/(.*)" --mapping-target="training-app-docker-dev-local/$1" <PROJECT_KEY>-rb-training 1.0 --sync
+
+### Remote delete
+
+    # Update dist-rules json file with the name of the destination (dsodedgehk, dsodedgeaus)
+    jf rbdelr -dist-rule=dist-rules.json --project=<PROJECT_KEY> --quiet --sync <PROJECT_KEY>-rb-training 1.0
+    

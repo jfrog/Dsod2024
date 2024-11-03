@@ -39,30 +39,29 @@ You can repeat these steps and create Groups and Access token either in the main
 In this section, you will create a federated repository and monitor the synchronisation between the source and destinations
 
 
-1. Find the docker repository <PROJECT_KEY>-docker-dev-local
-2. Convert this repository to **Federated** using the UI or via [API](#convert-local-repository-to-a-federated-repository)
+1. Find the docker repository <PROJECT_KEY>-app-docker-dev-local
+2. Convert this repository to **Federated** using the UI or via [JFrog CLI](#convert-local-repository-to-a-federated-repository)
 ![Convert To Federated](./assets/lab1_convert_to_federated.png)
 3. Edit the repository configuration and add repositories in the **Federation** tab
 ![Edit Federated](./assets/lab1_edit_federated.png)
-4. Choose the *dsosmultisite2* platform and select an existing repository. If the repository does not exist in the destination platform, you can automatically create it by clicking on  **Create new** button.
+4. Choose the *dsosmultisite2* platform and select and select **Create new**. This will create the federated repository in the second JPD automatically. 
 ![Add Federated Repositories](./assets/lab1_create_new_federated.png)
-5. Check that on the second JPD your repository has been created with the right configuration (If you created it automatically)
+5. Validate changes and save
+![Validate](./assets/lab1_validate_changes.png)
+6. Check that on the second JPD your repository has been created with the right configuration (If you created it automatically)
 ![Check Federated](./assets/lab1_check_federated_created.png)
 
 
 You can now upload artifacts in both federated repositories and check that they are replicated seamlessly.
 
-**Note**: <br>
-Since the JFrog platform is checksum aware, artifact transfer can be very fast if it already exists in the destination platform. In this lab, students use a pool of already uploaded artifacts. Therefore, some of them may exist in the destination platform filestore if another student already transferred it. 
-
 To upload an artifact without using the JFrog CLI or Docker client, you can copy an artifact from the **shared-docker-dev-local** to your federated repository. Not that this repository is in the **default** project.
-1. Copy artifact from the shared repository
+1. Copy artifact from the shared repository via the UI or via [JFrog CLI](#copying-files)
 ![Copy From Shared](./assets/lab1_copy_from_shared.png)
 2. Then select your federated repository
 ![Copy Destination](./assets/lab1_copy_destination.png)
 3. Then, check on the second JPD that your artifact is replicated
 ![Synced](./assets/lab1_artifact_synced.png)
-4. You can also review the federation status on the repository
+4. On the main JPD, uou can also review the federation status on the repository
 ![Fed status1](./assets/lab1_fed_status1.png)
 ![Fed status2](./assets/lab1_fed_status2.png)
 5. You can try to remove an artifact and note that this artifact is removed from all federated repositories.
@@ -71,19 +70,22 @@ To upload an artifact without using the JFrog CLI or Docker client, you can copy
 
 Although artifacts are synchronized, you can also try to update the configuration of the repository and check whether or no it is replicated. 
 
-Based on the network performance and size of the artifact, synchronising it in a far location can be long. You can check if it is possible to download it during the synchronisation period.  
+Based on the network performance and size of the artifact, synchronising it in a far location can be long. You can check if it is possible to download it during the synchronisation period.
 
-## API commands
+# Congratulations ! You have completed Lab 1
+
+## JFrog CLI
 
 ### Convert local repository to a federated repository
 
 Run :
 
-        jf rt curl -XPOST "/api/federation/migrate/<PROJECT_KEY>-docker-dev-local" -H "Content-Type: application/json"
+    jf rt curl -XPOST "/api/federation/migrate/<PROJECT_KEY>-app-docker-dev-local" -H "Content-Type: application/json"
 
 
 [JFrog documentation](https://jfrog.com/help/r/jfrog-rest-apis/convert-local-repository-to-a-federated-repository)
 
+### Copying files
 
+    jf rt cp shared-docker-dev-local/ubuntu/ <PROJECT_KEY>-app-docker-dev-local/ubuntu/
 
-# Congratulations ! You have completed Lab 1

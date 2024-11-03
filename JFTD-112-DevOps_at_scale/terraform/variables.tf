@@ -18,6 +18,11 @@ variable "aus_access_token" {
   type = string
 }
 
+variable "secondary_access_token" {
+  description = "JFrog access token of the secondary JPD"
+  type = string
+}
+
 variable "projects" {
   description = "List of JFrog project to create for students"
   type = list(

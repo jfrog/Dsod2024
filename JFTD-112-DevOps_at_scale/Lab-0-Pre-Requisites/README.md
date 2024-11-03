@@ -32,6 +32,9 @@ The aim of this lab is to configure the JFrog CLI / cURL client for students tha
       jf rt ping
 
 
+(JFrog CLI for Artifactory documentation)(https://docs.jfrog-applications.jfrog.io/jfrog-applications/jfrog-cli/cli-for-jfrog-artifactory)
+
+
 ## REST API with cURL client
 
 1. export your username and password in an environment variable (choose either username/password or token)
