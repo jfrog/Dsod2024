@@ -37,7 +37,7 @@ The aim of this lab is to configure the JFrog CLI / cURL client for students tha
 
 ## REST API with cURL client
 
-1. export your username and password in an environment variable (choose either username/password or token)
+Export your username and password in an environment variable (choose either username/password or token)
 
 
     export CREDS=username:password
@@ -45,7 +45,8 @@ The aim of this lab is to configure the JFrog CLI / cURL client for students tha
     export TOKEN=<TOKEN>
     export JFROG_URL=https://dsodmultisite.jfrog.io
 
-2. Request Artifactory health check
+
+Request Artifactory health check
 
 
     curl -u $CREDS "$JFROG_URL/artifactory/api/system/ping"
