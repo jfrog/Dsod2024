@@ -15,7 +15,7 @@ This lab is composed of:
 
 All these resources are part of the same circle of trust and access are federated between them (users, groups and tokens).
 
-As a student, you have a dedicated JFrog project where you will find a bunch of repositories that has been created for you. To select your JFrog project, please use the panel as follows
+As a student, you have a dedicated JFrog project where you will find a bunch of repositories that has been created for you. To select your JFrog project, please use the panel as follows.
 
 ![JFrog Project Select](./assets/lab1_project_select.png)
 
@@ -25,19 +25,22 @@ To access the topology of the platform and the access federation configuration, 
 
 In this section, you will create a user in the main JPD and check that it is synchronized with the second JPD and edge nodes.
 
+Log in the [main platform](https://dsodmultisite.jfrog.io/) with your credentials and select the **All Projects** project
+
 1. From the **Administration module**, click on Users then create a new user
 2. Fill required fields with relevant data and save (you can assign the user to the platform_admins group)
 ![New User](./assets/lab1_create_user.png)
-3. Use the newly created user to log in another platform
+3. Use the newly created user to log in [second JPD](), [HK edge node](ttps://dsodedgehk.jfrog.io/) or / and [Aus Edge node](https://dsodedgeaus.jfrog.io/)
 ![Log In](./assets/lab1_log_in_federated.png)
 4. You are now logged in the other platform. You may have read only access if you didn't provide permission during the user creation. 
 
-You can repeat these steps and create Groups and Access token either in the main JPD or the second JPD. Check that these resources are federated as expected. You can also delete your own resources.
+You can repeat these steps and create Users, Groups and Access token in one platform and check that it is replicated everywhere. You can also delete your own resources.
 
 ## Federated Repositories
 
 In this section, you will create a federated repository and monitor the synchronisation between the source and destinations
 
+Use the **main** JPD and select your **student** project
 
 1. Find the docker repository <PROJECT_KEY>-app-docker-dev-local
 2. Convert this repository to **Federated** using the UI or via [JFrog CLI](#convert-local-repository-to-a-federated-repository)
@@ -48,13 +51,13 @@ In this section, you will create a federated repository and monitor the synchron
 ![Add Federated Repositories](./assets/lab1_create_new_federated.png)
 5. Validate changes and save
 ![Validate](./assets/lab1_validate_changes.png)
-6. Check that on the second JPD your repository has been created with the right configuration (If you created it automatically)
+6. Check that on the [second JPD]((https://dsodmultisite2.jfrog.io/) your repository has been created with the right configuration (If you created it automatically)
 ![Check Federated](./assets/lab1_check_federated_created.png)
 
 
 You can now upload artifacts in both federated repositories and check that they are replicated seamlessly.
 
-To upload an artifact without using the JFrog CLI or Docker client, you can copy an artifact from the **shared-docker-dev-local** to your federated repository. Not that this repository is in the **default** project.
+To upload an artifact without using the JFrog CLI or Docker client, you can copy an artifact from the **shared-docker-dev-local** to your federated repository. Not that this repository is in the **default** project on the [main JPD](https://dsodmultisite.jfrog.io/).
 1. Copy artifact from the shared repository via the UI or via [JFrog CLI](#copying-files)
 ![Copy From Shared](./assets/lab1_copy_from_shared.png)
 2. Then select your federated repository
