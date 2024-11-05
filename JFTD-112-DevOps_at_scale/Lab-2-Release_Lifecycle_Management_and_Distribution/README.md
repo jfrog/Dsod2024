@@ -81,6 +81,12 @@ Use your **student** project for instructions below
 
 14. Add a Path Mappings to distribute release bundle to PROD repositories in your destination
 
+
+    # Path mappings
+    Inputs :                                    Outputs : 
+    <PROJECT_KEY>-app-docker-dev-local/(.*)     <PROJECT_KEY>-app-docker-prod-local/$1
+    <PROJECT_KEY>-app-helm-dev-local/(.*)       <PROJECT_KEY>-app-helm-prod-local/$1
+
 ![Path mapping](./assets/lab2_path_mapping.png)
 
 15. You should now see that your distribution is in progress then distributed

@@ -19,6 +19,8 @@ As a student, you have a dedicated JFrog project where you will find a bunch of 
 
 ![JFrog Project Select](./assets/lab1_project_select.png)
 
+To retrieve information about your project (especially the project key), you can click on **Project Settings** from **Administration** module
+
 To access the topology of the platform and the access federation configuration, put yourself in **All Projects** also called **default project**
 
 ## Access Federation
