@@ -15,33 +15,11 @@ This lab is composed of:
 
 All these resources are part of the same circle of trust and access are federated between them (users, groups and tokens).
 
-For this lab, you will use the following resources (already created):
-
-Virtual repositories:
-- <PROJECT_KEY>-app-docker-virtual
-- <PROJECT_KEY>-app-gradle-virtual
-- <PROJECT_KEY>-app-helm-virtual
-
-Local repositories:
-- <PROJECT_KEY>-app-docker-dev-local
-- <PROJECT_KEY>-app-docker-rc-local
-- <PROJECT_KEY>-app-docker-prod-local
-- <PROJECT_KEY>-app-gradle-dev-local
-- <PROJECT_KEY>-app-gradle-rc-local
-- <PROJECT_KEY>-app-gradle-prod-local
-- <PROJECT_KEY>-app-helm-dev-local
-- <PROJECT_KEY>-app-helm-rc-local
-- <PROJECT_KEY>-app-helm-prod-local
-
-Remote repositories
-- <PROJECT_KEY>-app-docker-remote
-- <PROJECT_KEY>-app-gradle-remote
-- <PROJECT_KEY>-app-helm-remote
-
-One build-info repository with 3 builds (on per package type) and one release-bundle-v2 
-
+For this lab, you will use the following resources:
 
 ![Lab resources](./assets/lab2_resources.png)
+
+All resources have been created for you. The purpose of this lab is to promote and distribute a docker image with the helm chart to deploy the application. The docker image contains a gradle application. 
 
 ## Release lifecycle management
 
@@ -95,36 +73,36 @@ Use your **student** project for instructions below
 
 ![RBV2 Start Distribution](./assets/lab2_start_distribution.png)
 
-11. Select the edge where you want to distribute your release bundle (You can optionally create the repository if it does not exist on the Edge node. In this lab, all repositories already exist).
+12. Select the edge where you want to distribute your release bundle (You can optionally create the repository if it does not exist on the Edge node. In this lab, all repositories already exist).
 
 ![Select Edge](./assets/lab2_select_edge.png)
 
-12. Click on *Next* then *Distribute*
+13. Click on *Next* then *Distribute*
 
-13. Add a Path Mappings to distribute release bundle to PROD repositories in your destination
+14. Add a Path Mappings to distribute release bundle to PROD repositories in your destination
 
 ![Path mapping](./assets/lab2_path_mapping.png)
 
-14. You should now see that your distribution is in progress then distributed
+15. You should now see that your distribution is in progress then distributed
 
 ![Distrib](./assets/lab2_distrib_in_progress.png)
 
 ![Distrib Done](./assets/lab2_distrib_done.png)
 
-14. [Optional] You can review all evidences related to a release bundle 
+16. [Optional] You can review all evidences related to a release bundle 
 
-15. Check on the edge node you selected that your artifact has been distributed. 
+17. Check on the edge node you selected that your artifact has been distributed. 
 
 ![Check Distrib](./assets/lab2_check_distrib.png)
 
-16. [Optional] You can try to delete your distributed release bundle in your edge using **remote delete** using UI or [JFrog CLI](#remote-delete)
+18. [Optional] You can try to delete your distributed release bundle in your edge using **remote delete** using UI or [JFrog CLI](#remote-delete)
 
 
 ### Going further
 
 In this section, we will check how Xray can secure your release bundle from being promoted and distributed if some thresholds are met.
 
-As you may see, release bundle are integrated with JFrog Xray. You can consult Xray scan data, from **Application** module, select **Xray** then **Scan list** and find your release bundle.
+As you may see, release bundle are integrated with JFrog Xray. You can consult Xray scan data, from **Application** module, select **Xray**, **Scan list** then **release bundle**  find your release bundle.
 ![Xray scan result](./assets/lab2_xray_scan_result.png)
 
 By using **Watches** and **Policies**, you are able to take actions once a policy is violated. These actions can be:
@@ -136,43 +114,49 @@ By using **Watches** and **Policies**, you are able to take actions once a polic
 
 In this section, we will check how Xray can secure your release bundle from being promoted and distributed if some thresholds are met.
 
-1. First, we need to index your newly created release bundle in Xray. From **Administration** module, click to **Xray settings** then **Indexed Resources** and Add a Release bundle
+1. First, we will update the Xray Policy to block the promotion and the distribution if the release bundle contains a critical cve. From the **Application** module, select **Xray**, **Watches & Policies** the **Policies**. Update the Xray policy named **<PROJECT_KEY>_critical_severity**
 
-![Index RBV2](./assets/lab2_index_rbv2.png)
+![Policies](./assets/lab2_policies.png)
 
-2. Choose your release bundle
-
-![Choose rbv2](./assets/lab2_index_rbv22.png)
-
-3. Update the Xray policy and enable *Block release bundle promotion* and *Block release bundle distribution*. From **Application** module, click on **Watches & Policies** then **critical_severity** policy and edit it. 
+2. Click on **Next** then enable *Block release bundle promotion* and *Block release bundle distribution* 
 
 ![Edit policy1](./assets/lab2_edit_policy1.png)
 
 ![Edit policy2](./assets/lab2_edit_policy2.png)
 
-4. Save the rule
+3. Save the rule and the policy
 
-5. Create a new release bundle and promote it or distribute a release bundle to a new destination
+4. Create a new release bundle. You can create it from builds like you did earlier or create it from a previous release bundle as follows
+
+![Creation](./assets/lab2_create_from_rb.png)
+
+![Creation2](./assets/lab2_create_from_rb2.png)
+
+5. Promote or distribute the release bundle. The promotion / distribution must be blocked because the release bundle contains a critical violation
 
 ![Block distribution](./assets/lab2_block_distribution.png)
 
-6. In case you want to distribute your bundle, you can ignore the violation that prevent the release bundle from being distributed. From **Application** module, click on **Xray** then **Watch Violations**
+6. In case you want to distribute your bundle even if a watch violation prevent the promotion / distribution, you can accept the risk and ignore it. From **Application** module, click on **Xray** then **Watch Violations**
 
 ![Watch violations](./assets/lab2_xray_watch_violation.png)
 
-7. Select the watch **stable_release** then ignore the violation
+7. Select the watch **<PROJECT_KEY>_stable_release** then ignore the violation. Be careful to select the right version of your release bundle.
 
 ![Ignore](./assets/lab2_ignore_violation.png)
 
-8. Fill the form with all relevant information
+8. Fill the form with all relevant information. You can decide to set an expiration to the ignore rule. Then **create** the ignore rule
 
 ![Fill](./assets/lab2_fill_form.png)
+
+You can see in the Policy violation section that your violation status is now **Ignored**
+
+![Ignored](./assets/lab2_ignored.png)
 
 9. Finally, you can try to promote / distribute your release bundle again. It should work
 
 ![Xray Distributed](./assets/lab2_xray_distributed.png)
 
-# Congratulations ! You have completed Lab
+# Congratulations ! You have completed Lab 2
 
 ## JFrog CLI
 
@@ -190,7 +174,7 @@ In this section, we will check how Xray can secure your release bundle from bein
     To be checked : it is possible to add multiple mapping pattern with the JFrog CLI ?
 
     # Update dist-rules json file with the name of the destination (dsodedgehk, dsodedgeaus)
-    jf rbd --dist-rule=dist-rules.json --project=<PROJECT_KEY> --mapping-pattern="training-app-docker-dev-local/(.*)" --mapping-target="training-app-docker-dev-local/$1" <PROJECT_KEY>-rb-training 1.0 --sync
+    jf rbd --dist-rule=dist-rules.json --project=<PROJECT_KEY> --mapping-pattern="training-app-docker-dev-local/(.*)" --mapping-target="training-app-docker-prod-local/$1" <PROJECT_KEY>-rb-training 1.0 --sync
 
 ### Remote delete
 
