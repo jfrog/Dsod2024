@@ -1,0 +1,14 @@
+{
+  "files": [
+    {
+      "build": "<PROJECT_KEY>-helm-jftd-112/1",
+      "includeDeps": "false",
+      "project": "<PROJECT_KEY>"
+    },
+    {
+      "build": "<PROJECT_KEY>-docker-jftd-112/1",
+      "includeDeps": "false",
+      "project": "<PROJECT_KEY>"
+    }
+  ]
+}
