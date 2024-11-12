@@ -169,8 +169,6 @@ You can see in the Policy violation section that your violation status is now **
 
 ### Distribute release bundle 
 
-    To be checked : it is possible to add multiple mapping pattern with the JFrog CLI ?
-
     # Update dist-rules json file with the name of the destination (dsodedgehk, dsodedgeaus)
     jf rbd --dist-rules=dist-rules.json --project=<PROJECT_KEY> <PROJECT_KEY>-rb-training 1.0 --sync
 
