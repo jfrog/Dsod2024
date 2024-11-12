@@ -79,14 +79,6 @@ Use your **student** project for instructions below
 
 13. Click on *Next* then *Distribute*
 
-14. Add a Path Mappings to distribute release bundle to PROD repositories in your destination
-
-
-    # Path mappings
-    Inputs :                                    Outputs : 
-    <PROJECT_KEY>-app-docker-dev-local/(.*)     <PROJECT_KEY>-app-docker-prod-local/$1
-    <PROJECT_KEY>-app-helm-dev-local/(.*)       <PROJECT_KEY>-app-helm-prod-local/$1
-
 ![Path mapping](./assets/lab2_path_mapping.png)
 
 15. You should now see that your distribution is in progress then distributed
@@ -180,10 +172,6 @@ You can see in the Policy violation section that your violation status is now **
     To be checked : it is possible to add multiple mapping pattern with the JFrog CLI ?
 
     # Update dist-rules json file with the name of the destination (dsodedgehk, dsodedgeaus)
-    jf rbd --dist-rule=dist-rules.json --project=<PROJECT_KEY> --mapping-pattern="training-app-docker-dev-local/(.*)" --mapping-target="training-app-docker-prod-local/$1" <PROJECT_KEY>-rb-training 1.0 --sync
+    jf rbd --dist-rules=dist-rules.json --project=<PROJECT_KEY> <PROJECT_KEY>-rb-training 1.0 --sync
 
-### Remote delete
-
-    # Update dist-rules json file with the name of the destination (dsodedgehk, dsodedgeaus)
-    jf rbdelr -dist-rule=dist-rules.json --project=<PROJECT_KEY> --quiet --sync <PROJECT_KEY>-rb-training 1.0
     
