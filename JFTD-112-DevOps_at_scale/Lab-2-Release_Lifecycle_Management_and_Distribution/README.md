@@ -93,8 +93,9 @@ Use your **student** project for instructions below
 
 ![Check Distrib](./assets/lab2_check_distrib.png)
 
-18. [Optional] You can try to delete your distributed release bundle in your edge using **remote delete** using UI or [JFrog CLI](#remote-delete)
+18. [Optional] You can decide to delete the release bundle that has been distributed earlier using the **remote delete** feature in the UI or [JFrog CLI](#remote-delete). In the UI, select the release bundle version and choose **remote delete** with the relevant edge node. 
 
+![Remote delete](./assets/lab2_remote_delete.png)
 
 ### Going further
 

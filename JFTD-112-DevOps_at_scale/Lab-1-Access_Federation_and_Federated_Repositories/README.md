@@ -31,9 +31,15 @@ Log in the [main platform](https://dsodmultisite.jfrog.io/) with your credential
 
 1. From the **Administration module**, click on Users then create a new user
 2. Fill required fields with relevant data and save (you can assign the user to the platform_admins group)
+
 ![New User](./assets/lab1_create_user.png)
-3. Use the newly created user to log in [second JPD](), [HK edge node](ttps://dsodedgehk.jfrog.io/) or / and [Aus Edge node](https://dsodedgeaus.jfrog.io/)
+
+![Perm](./assets/lab1_user_perm.png)
+
+3. Use the newly created user to log in [second JPD](https://dsodmultisite2.jfrog.io/), [HK edge node](ttps://dsodedgehk.jfrog.io/) or / and [Aus Edge node](https://dsodedgeaus.jfrog.io/)
+
 ![Log In](./assets/lab1_log_in_federated.png)
+
 4. You are now logged in the other platform. You may have read only access if you didn't provide permission during the user creation. 
 
 You can repeat these steps and create Users, Groups and Access token in one platform and check that it is replicated everywhere. You can also delete your own resources.
