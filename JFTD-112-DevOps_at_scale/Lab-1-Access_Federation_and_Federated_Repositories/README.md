@@ -66,8 +66,12 @@ Use the **main** JPD and select your **student** project
 You can now upload artifacts in both federated repositories and check that they are replicated seamlessly.
 
 To upload an artifact without using the JFrog CLI or Docker client, you can copy an artifact from the **shared-docker-dev-local** to your federated repository. Not that this repository is in the **default** project on the [main JPD](https://dsodmultisite.jfrog.io/).
-1. Copy artifact from the shared repository via the UI or via [JFrog CLI](#copying-files)
+1. **Copy** artifact from the shared repository via the UI or via [JFrog CLI](#copying-files). 
+
+*Please don't move artifacts since they are shared with all students*
+
 ![Copy From Shared](./assets/lab1_copy_from_shared.png)
+
 2. Then select your federated repository
 ![Copy Destination](./assets/lab1_copy_destination.png)
 3. Then, check on the second JPD that your artifact is replicated
